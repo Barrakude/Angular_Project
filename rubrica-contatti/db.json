@@ -1,0 +1,14 @@
+{
+  "contatti": [
+    { "id": 1, "nome": "Mario", "cognome": "Rossi", "email": "mario@esempio.com" },
+    { "id": 2, "nome": "Laura", "cognome": "Bianchi", "email": "laura@esempio.com" },
+    { "id": 3, "nome": "Giovanni", "cognome": "Verdi", "email": "giovanni@mario.com" },
+    { "id": 4, "nome": "Anna", "cognome": "Neri", "email": "anna@magio.com" },
+    { "id": 5, "nome": "Luca", "cognome": "Gialli", "email": "lucaç@esempio.com" },
+    { "id": 6, "nome": "Sofia", "cognome": "Blu", "email": "sofia@esempio.com" },
+    { "id": 7, "nome": "Marco", "cognome": "Grigi", "email": "marco@esempio.com" },
+    { "id": 8, "nome": "Elena", "cognome": "Rossi", "email": "elena@esempio.com" },
+    { "id": 9, "nome": "Francesco", "cognome": "Bianchi", "email": "francesco@esempio.com" },
+    { "id": 10, "nome": "Chiara", "cognome": "Verdi", "email": "chiara@esempio.com" }
+  ]
+}
