@@ -1,0 +1,29 @@
+<ul class="nav nav-tabs justify-content-center">
+    <li class="nav-item">
+        <button class="nav-link" [class.active]="activeTab === 'todo'" (click)="setActiveTab('todo')">Todo</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" [class.active]="activeTab === 'doing'" (click)="setActiveTab('doing')">Doing</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" [class.active]="activeTab === 'done'" (click)="setActiveTab('done')">Done</button>
+    </li>
+</ul>
+
+
+<div class="tab-content mt-3">
+    @switch (activeTab) {
+        @case ('todo') {
+            <tmg-todo></tmg-todo>
+        }
+        @case ('doing') {
+            <tmg-doing></tmg-doing>
+        }
+        @case ('done') {
+            <tmg-done></tmg-done>
+        }
+        @default {
+            <tmg-todo></tmg-todo>
+        }
+    }
+</div>
