@@ -38,15 +38,9 @@ export class TaskListService {
   }
 
   createTask(body:ITask): Observable<ITask> {
-    return this._http.post<IResponse<ITask>>(this.url, body).pipe(
+    return this._http.post<IResponse<ITask>>(${this.url}, { body }).pipe(
       map(({ data }) => data)
     );
-  }
 
-  detailTask(id:number):Observable<ITask>{
-    return this._http.get<IResponse<ITask>>(`${this.url}/${id}`).pipe(
-      map(({ data }) => data)
-    );
-  }
 
 }

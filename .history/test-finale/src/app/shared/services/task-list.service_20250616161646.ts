@@ -31,22 +31,11 @@ export class TaskListService {
     );
   }
 
-  updateTask(id: number, body: ITask): Observable<ITask> {
+  updateTask(id: number, body: string): Observable<ITask> {
     return this._http.patch<IResponse<ITask>>(`${this.url}/${id}`, { body }).pipe(
       map(({ data }) => data)
     );
   }
 
-  createTask(body:ITask): Observable<ITask> {
-    return this._http.post<IResponse<ITask>>(this.url, body).pipe(
-      map(({ data }) => data)
-    );
-  }
-
-  detailTask(id:number):Observable<ITask>{
-    return this._http.get<IResponse<ITask>>(`${this.url}/${id}`).pipe(
-      map(({ data }) => data)
-    );
-  }
 
 }
