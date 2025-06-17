@@ -20,7 +20,7 @@
             <tmg-doing [tasks]="doingTasks" (taskUpdated)="onTaskUpdated()"></tmg-doing>
         }
         @case ('done') {
-            <tmg-done [tasks]="doneTasks" (taskUpdated)="onTaskUpdated()"></tmg-done>
+            <tmg-done [tasks]="doneTasks"></tmg-done>
         }
         @default {
             <tmg-todo></tmg-todo>

@@ -25,7 +25,7 @@ export class TodoComponent {
       this.setToDoing(event.task);
     }
     if(event.action==='delete'){
-      this.deleteTask(event.task);
+      this.deleteTask(event.task):
     }
   }
 
@@ -43,7 +43,8 @@ export class TodoComponent {
       tap(()=>{
         console.log('task:', task.id, 'eliminata');
         this.taskUpdated.emit();
+        
       })
-    ).subscribe();
+    )
   }
 }

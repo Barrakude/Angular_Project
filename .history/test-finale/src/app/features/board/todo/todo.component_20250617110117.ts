@@ -43,7 +43,8 @@ export class TodoComponent {
       tap(()=>{
         console.log('task:', task.id, 'eliminata');
         this.taskUpdated.emit();
+        
       })
-    ).subscribe();
+    )
   }
 }

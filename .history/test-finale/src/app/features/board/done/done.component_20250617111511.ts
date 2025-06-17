@@ -1,9 +1,8 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ITask } from '../../../shared/interfaces/itask';
 import { TaskCardComponent } from '../../../shared/components/task-card/task-card.component';
-
+import { TaskService } from '../../../shared/services/task.service';
 import { tap } from 'rxjs/operators';
-import { TaskListService } from '../../../shared/services/task-list.service';
 
 @Component({
   selector: 'tmg-done',
@@ -15,12 +14,11 @@ export class DoneComponent {
   @Input() tasks: ITask[] = [];
   @Output() taskUpdated = new EventEmitter<void>();
 
-  private readonly _taskService = inject(TaskListService);
+  constructor(private _taskService: TaskService) {}
 
-  onTaskAction(event: { task: ITask; action: string }): void {
-    // Logica per gestire l'azione del task
-    console.log('Action clicked for task:', event.action);
-    this.deleteTask(event.task);
+  onTaskAction(task: ITask): void {
+    // Logica per gestire l'azione del task (es. cambiare stato)
+    console.log('Action clicked for task:', task);
   }
 
   private deleteTask(task: ITask): void {
@@ -29,7 +27,7 @@ export class DoneComponent {
       .pipe(
         tap(() => {
           console.log('task:', task.id, 'eliminata');
-          this.taskUpdated.emit();
+          this.taskUpdated.emit(); // Assicurati che questo sia presente
         })
       )
       .subscribe();

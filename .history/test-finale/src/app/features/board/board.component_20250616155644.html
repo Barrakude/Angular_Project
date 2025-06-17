@@ -14,13 +14,13 @@
 <div class="tab-content mt-3">
     @switch (activeTab) {
         @case ('todo') {
-            <tmg-todo [tasks]="todoTasks" (taskUpdated)="onTaskUpdated()"></tmg-todo>
+            <tmg-todo [tasks]="todoTasks"></tmg-todo>
         }
         @case ('doing') {
-            <tmg-doing [tasks]="doingTasks" (taskUpdated)="onTaskUpdated()"></tmg-doing>
+            <tmg-doing [tasks]="doingTasks"></tmg-doing>
         }
         @case ('done') {
-            <tmg-done [tasks]="doneTasks" (taskUpdated)="onTaskUpdated()"></tmg-done>
+            <tmg-done [tasks]="doneTasks"></tmg-done>
         }
         @default {
             <tmg-todo></tmg-todo>

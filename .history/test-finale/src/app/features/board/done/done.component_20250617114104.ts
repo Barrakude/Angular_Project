@@ -17,8 +17,8 @@ export class DoneComponent {
 
   private readonly _taskService = inject(TaskListService);
 
-  onTaskAction(event: { task: ITask; action: string }): void {
-    // Logica per gestire l'azione del task
+  onTaskActionevent(event: { task: ITask; action: string }): void {
+    // Logica per gestire l'azione del task (es. cambiare stato)
     console.log('Action clicked for task:', event.action);
     this.deleteTask(event.task);
   }
@@ -29,7 +29,7 @@ export class DoneComponent {
       .pipe(
         tap(() => {
           console.log('task:', task.id, 'eliminata');
-          this.taskUpdated.emit();
+          this.taskUpdated.emit(); // Assicurati che questo sia presente
         })
       )
       .subscribe();
