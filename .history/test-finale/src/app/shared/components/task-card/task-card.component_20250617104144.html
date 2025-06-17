@@ -16,14 +16,11 @@
     <p class="card-text">{{ task.description }}</p>
     @if(task.status === 'todo'){
       <div class="d-flex gap-2">
-        <button type="button" [class]="getActionButtonClass()" (click)="onActionClick1()">
-          {{ getActionButtonText() }}
-        </button>
-        <button type="button" [class]="deleteActionButtonClass()" (click)="deleteActionButton()">
-          Elimina
-        </button>
-        
-        </div>
+      
+      </div>
+      <button type="button" [class]="getActionButtonClass()" (click)="onActionClick1()">
+        {{ getActionButtonText() }}
+      </button>
     } @if(task.status === 'doing'){
     <div class="d-flex gap-2">
       <button type="button" [class]="getSecondActionButtonClass()" (click)="onActionClick2()">
@@ -33,7 +30,7 @@
         {{ getActionButtonText() }}
       </button>
       <button type="button" [class]="deleteActionButtonClass()" (click)="deleteActionButton()">
-        Elimina
+        Elimina task
       </button>
       </div>
     } @if(task.status === 'done'){

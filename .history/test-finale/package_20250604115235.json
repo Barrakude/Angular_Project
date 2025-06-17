@@ -6,7 +6,6 @@
     "start": "ng serve",
     "json-server": "nodemon mock/index.js",
     "start:mock": "run-p start json-server",
-    "dev": "nodemon --ignore mock/db.json mock/index.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

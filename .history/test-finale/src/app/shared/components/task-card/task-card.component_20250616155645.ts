@@ -4,21 +4,23 @@ import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'tmg-task-card',
-  imports: [TitleCasePipe],
+  imports: [
+    TitleCasePipe
+  ],
   templateUrl: './task-card.component.html',
-  styleUrl: './task-card.component.scss',
+  styleUrl: './task-card.component.scss'
 })
 export class TaskCardComponent {
   @Input() task!: ITask;
-  @Output() actionClick = new EventEmitter<{ task: ITask; action: string }>();
+  @Output() actionClick = new EventEmitter<{task: ITask, action: string}>();
 
   onActionClick1(): void {
     const action = this.task.status === 'todo' ? 'start' : 'complete';
-    this.actionClick.emit({ task: this.task, action });
+    this.actionClick.emit({task: this.task, action});
   }
 
-  onActionClick2(): void {
-    this.actionClick.emit({ task: this.task, action: 'back' });
+  onActionClick2():void{
+    this.actionClick.emit({task:this.task,action:'back'});
   }
 
   getActionButtonText(): string {
@@ -32,8 +34,8 @@ export class TaskCardComponent {
     }
   }
 
-  getSecondActionButtonText(): string {
-    return 'Sposta a Todo';
+  getSecondActionButtonText():string{
+    return 'Sposta a Todo'
   }
 
   getActionButtonClass(): string {
@@ -49,13 +51,5 @@ export class TaskCardComponent {
 
   getSecondActionButtonClass(): string {
     return 'btn btn-secondary';
-  }
-
-  deleteActionButton(): void {
-    this.actionClick.emit({ task: this.task, action: 'delete' });
-  }
-
-  deleteActionButtonClass(): string {
-    return 'btn btn-danger';
   }
 }

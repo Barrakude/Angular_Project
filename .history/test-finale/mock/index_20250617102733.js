@@ -100,10 +100,10 @@ router.render = (req, res) => {
     const linkData = link ? parseLink(link) : undefined;
 
     res.jsonp({
-      prev: link ? (linkData.prev || null) : undefined,
-      next: link ? (linkData.next || null) : undefined,
-      first: link ? (linkData.first || null) : undefined,
-      last: link ? (linkData.last || null) : undefined,
+      prev: !!link ? (linkData.prev || null) : undefined,
+      next: !!link ? (linkData.next || null) : undefined,
+      first: !!link ? (linkData.first || null) : undefined,
+      last: !!link ? (linkData.last || null) : undefined,
       totalCount,
       data: res.locals.data
     });

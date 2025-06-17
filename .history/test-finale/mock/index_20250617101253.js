@@ -26,12 +26,12 @@ const parseLink = (value) => {
 app.use((req, res, next) => {
   const start = Date.now();
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-
+  
   res.on('finish', () => {
     const duration = Date.now() - start;
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${res.statusCode} - ${duration}ms`);
   });
-
+  
   next();
 });
 
@@ -97,13 +97,13 @@ router.render = (req, res) => {
   try {
     const totalCount = _(res.get('x-total-count'))?.value();
     const link = _(res.get('Link')).value();
-    const linkData = link ? parseLink(link) : undefined;
+    const linkData = !!link ? parseLink(link) : undefined;
 
     res.jsonp({
-      prev: link ? (linkData.prev || null) : undefined,
-      next: link ? (linkData.next || null) : undefined,
-      first: link ? (linkData.first || null) : undefined,
-      last: link ? (linkData.last || null) : undefined,
+      prev: !!link ? (linkData.prev || null) : undefined,
+      next: !!link ? (linkData.next || null) : undefined,
+      first: !!link ? (linkData.first || null) : undefined,
+      last: !!link ? (linkData.last || null) : undefined,
       totalCount,
       data: res.locals.data
     });
@@ -129,7 +129,7 @@ app.use('*', (req, res) => {
 // Gestione errori globale
 app.use((err, req, res, next) => {
   console.error('Errore globale:', err.stack);
-
+  
   if (!res.headersSent) {
     res.status(500).json({
       error: 'Errore interno del server',

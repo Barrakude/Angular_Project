@@ -97,13 +97,13 @@ router.render = (req, res) => {
   try {
     const totalCount = _(res.get('x-total-count'))?.value();
     const link = _(res.get('Link')).value();
-    const linkData = link ? parseLink(link) : undefined;
+    const linkData = !!link ? parseLink(link) : undefined;
 
     res.jsonp({
-      prev: link ? (linkData.prev || null) : undefined,
-      next: link ? (linkData.next || null) : undefined,
-      first: link ? (linkData.first || null) : undefined,
-      last: link ? (linkData.last || null) : undefined,
+      prev: !!link ? (linkData.prev || null) : undefined,
+      next: !!link ? (linkData.next || null) : undefined,
+      first: !!link ? (linkData.first || null) : undefined,
+      last: !!link ? (linkData.last || null) : undefined,
       totalCount,
       data: res.locals.data
     });

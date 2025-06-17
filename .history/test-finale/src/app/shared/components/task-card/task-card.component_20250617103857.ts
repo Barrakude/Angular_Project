@@ -54,8 +54,4 @@ export class TaskCardComponent {
   deleteActionButton(): void {
     this.actionClick.emit({ task: this.task, action: 'delete' });
   }
-
-  deleteActionButtonClass(): string {
-    return 'btn btn-danger';
-  }
 }
