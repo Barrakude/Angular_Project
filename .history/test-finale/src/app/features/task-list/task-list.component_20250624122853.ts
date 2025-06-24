@@ -45,7 +45,7 @@ export class TaskListComponent implements OnInit {
   statusOption = ['todo', 'doing', 'done'];
 
   ngOnInit(): void {
-    this.getTask();
+    //this.getTask();
     this.loadTasks();
   }
 
@@ -63,7 +63,7 @@ export class TaskListComponent implements OnInit {
     if (formValues.description) filters.description = formValues.description;
     if (formValues.status) filters.status = formValues.status;
 
-    this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
+    this._taskService.getTasks(pagination, Object.keys(filters).length ? filters : undefined)
       .pipe(
         take(1),
         tap((response: IResponse<ITask[]>) => {
@@ -80,100 +80,42 @@ export class TaskListComponent implements OnInit {
       ).subscribe();
   }
   //! metodo senza paginazione
-  getTask(): void {
-    this._taskService
-      .getTasks()
-      .pipe(
-        take(1),
-        tap((data) => {
-          this.tasks = data;
-          this.filteredTask = data;
-        })
-      )
-      .subscribe();
-  }
-
-  // onSearch(): void {
-  //   const formValues = this.searchForm.value;
-
-  //   this.filteredTask = this.tasks.filter((task) => {
-  //     const titleValue =
-  //       !formValues.title ||
-  //       task.title.toLowerCase().includes(formValues.title.toLowerCase());
-
-  //     const descriptionValue =
-  //       !formValues.description ||
-  //       task.description
-  //         .toLowerCase()
-  //         .includes(formValues.description.toLowerCase());
-
-  //     const statusValue =
-  //       !formValues.status || task.status === formValues.status;
-
-  //     return titleValue && descriptionValue && statusValue;
-  //   });
+  // getTask(): void {
+  //   this._taskService
+  //     .getTasks()
+  //     .pipe(
+  //       take(1),
+  //       tap((data) => {
+  //         this.tasks = data;
+  //         this.filteredTask = data;
+  //       })
+  //     )
+  //     .subscribe();
   // }
 
-   onSearch(): void {
-    this.currentPage = 1; // Reset alla prima pagina quando si cerca
-    this.loadTasks();
+  onSearch(): void {
+    const formValues = this.searchForm.value;
+
+    this.filteredTask = this.tasks.filter((task) => {
+      const titleValue =
+        !formValues.title ||
+        task.title.toLowerCase().includes(formValues.title.toLowerCase());
+
+      const descriptionValue =
+        !formValues.description ||
+        task.description
+          .toLowerCase()
+          .includes(formValues.description.toLowerCase());
+
+      const statusValue =
+        !formValues.status || task.status === formValues.status;
+
+      return titleValue && descriptionValue && statusValue;
+    });
   }
 
   onClear(): void {
-    // this.searchForm.reset();
-    // this.filteredTask = this.tasks;
     this.searchForm.reset();
-    this.currentPage = 1; // Reset alla prima pagina
-    this.loadTasks();
+    this.filteredTask = this.tasks;
   }
-
- // Metodi per la navigazione
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.loadTasks();
-    }
-  }
-
-  goToFirstPage(): void {
-    this.goToPage(this.firstPage);
-  }
-
-  goToLastPage(): void {
-    this.goToPage(this.lastPage);
-  }
-
-  goToPrevPage(): void {
-    if (this.prevPage) {
-      this.goToPage(this.prevPage);
-    }
-  }
-
-  goToNextPage(): void {
-    if (this.nextPage) {
-      this.goToPage(this.nextPage);
-    }
-  }
-
-  // Genera array di numeri di pagina per la paginazione
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxPagesToShow = 5;
-    const half = Math.floor(maxPagesToShow / 2);
-    
-    let start = Math.max(this.currentPage - half, 1);
-    let end = Math.min(start + maxPagesToShow - 1, this.totalPages);
-    
-    if (end - start + 1 < maxPagesToShow) {
-      start = Math.max(end - maxPagesToShow + 1, 1);
-    }
-    
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    
-    return pages;
-  }
-
-
 }

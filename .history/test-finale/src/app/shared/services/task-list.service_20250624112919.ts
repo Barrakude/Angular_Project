@@ -24,33 +24,19 @@ export class TaskListService {
   private readonly _http:HttpClient=inject(HttpClient);
   private readonly url = 'http://localhost:3000/tasks';
 
-  getTasks():Observable<ITask[]>{
-    return this._http.get<IResponse<ITask[]>>(this.url).pipe(
-      map(({ data }) => data)
-    );
-  }
+  // getTasks():Observable<ITask[]>{
+  //   return this._http.get<IResponse<ITask[]>>(this.url).pipe(
+  //     map(({ data }) => data)
+  //   );
+  // }
 
-  getPageTasks(pagination?: IPaginationParams, filters?:ITaskFilters):Observable<IResponse<ITask[]>>{
+  getTasks(pagination?: IPaginationParams, filters:ITaskFilters):Observable<IResponse<ITask[]>>{
     let params = new HttpParams();
 
-    //aggiungo parametri di paginazione
     if(pagination){
       params = params.set('_page',pagination.page.toString());
-      params = params.set('_limit',pagination.limit.toString());
+       params = params.set('_limit',pagination.limit.toString());
     }
-    //aggiungo filtri
-    if(filters){
-      if (filters.title) {
-        params = params.set('title', filters.title);
-      }
-      if (filters.description) {
-        params = params.set('description', filters.description);
-      }
-      if (filters.status) {
-        params = params.set('status', filters.status);
-      }
-    }
-    return this._http.get<IResponse<ITask[]>>(this.url, { params });
   }
 
   deleteTask(id:number):Observable<ITask>{

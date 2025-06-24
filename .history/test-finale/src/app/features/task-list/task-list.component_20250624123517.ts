@@ -45,7 +45,7 @@ export class TaskListComponent implements OnInit {
   statusOption = ['todo', 'doing', 'done'];
 
   ngOnInit(): void {
-    this.getTask();
+    //this.getTask();
     this.loadTasks();
   }
 
@@ -63,7 +63,7 @@ export class TaskListComponent implements OnInit {
     if (formValues.description) filters.description = formValues.description;
     if (formValues.status) filters.status = formValues.status;
 
-    this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
+    this._taskService.getTasks(pagination, Object.keys(filters).length ? filters : undefined)
       .pipe(
         take(1),
         tap((response: IResponse<ITask[]>) => {
@@ -80,18 +80,18 @@ export class TaskListComponent implements OnInit {
       ).subscribe();
   }
   //! metodo senza paginazione
-  getTask(): void {
-    this._taskService
-      .getTasks()
-      .pipe(
-        take(1),
-        tap((data) => {
-          this.tasks = data;
-          this.filteredTask = data;
-        })
-      )
-      .subscribe();
-  }
+  // getTask(): void {
+  //   this._taskService
+  //     .getTasks()
+  //     .pipe(
+  //       take(1),
+  //       tap((data) => {
+  //         this.tasks = data;
+  //         this.filteredTask = data;
+  //       })
+  //     )
+  //     .subscribe();
+  // }
 
   // onSearch(): void {
   //   const formValues = this.searchForm.value;

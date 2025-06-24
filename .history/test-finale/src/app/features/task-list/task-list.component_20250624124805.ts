@@ -63,7 +63,7 @@ export class TaskListComponent implements OnInit {
     if (formValues.description) filters.description = formValues.description;
     if (formValues.status) filters.status = formValues.status;
 
-    this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
+    this._taskService.getTasks(pagination, Object.keys(filters).length ? filters : undefined)
       .pipe(
         take(1),
         tap((response: IResponse<ITask[]>) => {

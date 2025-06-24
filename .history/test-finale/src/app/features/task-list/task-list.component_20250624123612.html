@@ -36,6 +36,21 @@
     </div>
 </div>
 
+<!-- Informazioni di paginazione -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="text-muted">
+        Mostrando {{tasks.length}} di {{totalItems}} risultati (Pagina {{currentPage}} di {{totalPages}})
+    </div>
+    <div>
+        <select class="form-select form-select-sm" style="width: auto;" 
+                [value]="itemsPerPage" 
+                (change)="itemsPerPage = +$any($event.target).value; currentPage = 1; loadTasks()">
+            <option value="5">5 per pagina</option>
+            <option value="10">10 per pagina</option>
+            <option value="20">20 per pagina</option>
+        </select>
+    </div>
+</div>
 
 <table class="table">
     <thead>
@@ -70,21 +85,7 @@
         }
     </tbody>
 </table>
-<!-- Informazioni di paginazione -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div class="text-muted">
-        Mostrando {{tasks.length}} di {{totalItems}} risultati (Pagina {{currentPage}} di {{totalPages}})
-    </div>
-    <div>
-        <select class="form-select form-select-sm" style="width: auto;" 
-                [value]="itemsPerPage" 
-                (change)="itemsPerPage = +$any($event.target).value; currentPage = 1; loadTasks()">
-            <option value="5">5 per pagina</option>
-            <option value="10">10 per pagina</option>
-            <option value="20">20 per pagina</option>
-        </select>
-    </div>
-</div>
+
 <!-- Paginazione -->
 @if (totalPages > 1) {
 <nav aria-label="Paginazione">

@@ -24,13 +24,13 @@ export class TaskListService {
   private readonly _http:HttpClient=inject(HttpClient);
   private readonly url = 'http://localhost:3000/tasks';
 
-  getTasks():Observable<ITask[]>{
-    return this._http.get<IResponse<ITask[]>>(this.url).pipe(
-      map(({ data }) => data)
-    );
-  }
+  // getTasks():Observable<ITask[]>{
+  //   return this._http.get<IResponse<ITask[]>>(this.url).pipe(
+  //     map(({ data }) => data)
+  //   );
+  // }
 
-  getPageTasks(pagination?: IPaginationParams, filters?:ITaskFilters):Observable<IResponse<ITask[]>>{
+  getTasks(pagination?: IPaginationParams, filters:ITaskFilters):Observable<IResponse<ITask[]>>{
     let params = new HttpParams();
 
     //aggiungo parametri di paginazione
