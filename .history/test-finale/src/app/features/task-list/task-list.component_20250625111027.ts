@@ -129,25 +129,32 @@ export class TaskListComponent implements OnInit {
     const formValues = this.searchForm.value;
     const filters: ITaskFilters = {};
 
-    // Aggiungi solo i filtri che hanno valori non vuoti
-    if (formValues.title?.trim()) {
-      filters.title = formValues.title.trim();
-    }
-    if (formValues.description?.trim()) {
-      filters.description = formValues.description.trim();
-    }
-    if (formValues.status) {
-      filters.status = formValues.status;
-    }
+    // Aggiungi solo i filtri che hanno valori con normalizzazione lowercase
+    if (formValues.title?.trim()) filters.title = formValues.title.trim().toLowerCase();
+    if (formValues.description?.trim()) filters.description = formValues.description.trim().toLowerCase();
+    if (formValues.status?.trim()) filters.status = formValues.status.trim().toLowerCase();
 
     this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
       .pipe(
         take(1),
         tap((response: IResponse<ITask[]>) => {
-          // RIMUOVI IL FILTRO LOCALE DA QUI
-          // Il server ha già filtrato i dati.
+          let filteredTasks = response.data;
           
-          this.tasks = response.data; // Assegna direttamente i dati dalla risposta
+          // Applica filtri locali con includes e toLowerCase
+          if (Object.keys(filters).length > 0) {
+            filteredTasks = response.data.filter(task => {
+              const titleMatch = !filters.title || 
+                task.title?.toLowerCase().includes(filters.title);
+              const descriptionMatch = !filters.description || 
+                task.description?.toLowerCase().includes(filters.description);
+              const statusMatch = !filters.status || 
+                task.status?.toLowerCase().includes(filters.status);
+              
+              return titleMatch && descriptionMatch && statusMatch;
+            });
+          }
+          
+          this.tasks = filteredTasks;
           this.totalItems = response.totalCount || 0;
           this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
           

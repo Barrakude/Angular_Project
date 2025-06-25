@@ -1,5 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { IPaginationParams, ITaskFilters, TaskListService } from '../../shared/services/task-list.service';
+import {
+  IPaginationParams,
+  ITaskFilters,
+  TaskListService,
+} from '../../shared/services/task-list.service';
 import { ITask } from '../../shared/interfaces/itask';
 import { take, tap } from 'rxjs';
 import { TaskStatusPipe } from '../../shared/pipes/task-status.pipe';
@@ -22,6 +26,7 @@ export class TaskListComponent implements OnInit {
   private readonly _fb: FormBuilder = inject(FormBuilder);
 
   tasks: ITask[] = [];
+  filteredTask: ITask[] = [];
 
   //proprietà per la paginazione
   currentPage = 1;
@@ -44,15 +49,31 @@ export class TaskListComponent implements OnInit {
   statusOption = ['todo', 'doing', 'done'];
 
   ngOnInit(): void {
-    // this.getTask();
+    this.getTask();
     this.loadTasks();
   }
 
-   onSearch(): void {
-    this.currentPage = 1; // Reset alla prima pagina quando si cerca
-    this.loadTasks();
-  }
+  onSearch(): void {
+    this.currentPage = 1;
+    const formValues = this.searchForm.value;
 
+    this.filteredTask = this.tasks.filter((task) => {
+      const titleValue =
+        !formValues.title ||
+        task.title.toLowerCase().includes(formValues.title.toLowerCase());
+
+      const descriptionValue =
+        !formValues.description ||
+        task.description
+          .toLowerCase()
+          .includes(formValues.description.toLowerCase());
+
+      const statusValue =
+        !formValues.status || task.status === formValues.status;
+
+      return titleValue && descriptionValue && statusValue;
+    });
+  }
 
   onClear(): void {
     // this.searchForm.reset();
@@ -61,8 +82,8 @@ export class TaskListComponent implements OnInit {
     this.currentPage = 1; // Reset alla prima pagina
     this.loadTasks();
   }
-  
- // Metodi per la navigazione
+
+  // Metodi per la navigazione
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
@@ -95,69 +116,80 @@ export class TaskListComponent implements OnInit {
     const pages: number[] = [];
     const maxPagesToShow = 5;
     const half = Math.floor(maxPagesToShow / 2);
-    
+
     let start = Math.max(this.currentPage - half, 1);
     let end = Math.min(start + maxPagesToShow - 1, this.totalPages);
-    
+
     if (end - start + 1 < maxPagesToShow) {
       start = Math.max(end - maxPagesToShow + 1, 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
 
-  deleteTask(taskId:number):void{
-    this._taskService.deleteTask(taskId).pipe(
-      take(1),
-      tap(()=>{
-        console.log('task:', taskId, 'eliminata');
-        this.loadTasks();
-      })
-    ).subscribe();
+  deleteTask(taskId: number): void {
+    this._taskService
+      .deleteTask(taskId)
+      .pipe(
+        take(1),
+        tap(() => {
+          console.log('task:', taskId, 'eliminata');
+          this.loadTasks();
+        })
+      )
+      .subscribe();
   }
-  
+
   loadTasks(): void {
     const pagination: IPaginationParams = {
       page: this.currentPage,
-      limit: this.itemsPerPage
+      limit: this.itemsPerPage,
     };
 
     const formValues = this.searchForm.value;
     const filters: ITaskFilters = {};
 
-    // Aggiungi solo i filtri che hanno valori non vuoti
-    if (formValues.title?.trim()) {
-      filters.title = formValues.title.trim();
-    }
-    if (formValues.description?.trim()) {
-      filters.description = formValues.description.trim();
-    }
-    if (formValues.status) {
-      filters.status = formValues.status;
-    }
+    // Aggiungi solo i filtri che hanno valori
+    if (formValues.title) filters.title = formValues.title;
+    if (formValues.description) filters.description = formValues.description;
+    if (formValues.status) filters.status = formValues.status;
 
-    this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
+    this._taskService
+      .getPageTasks(
+        pagination,
+        Object.keys(filters).length ? filters : undefined
+      )
       .pipe(
         take(1),
         tap((response: IResponse<ITask[]>) => {
-          // RIMUOVI IL FILTRO LOCALE DA QUI
-          // Il server ha già filtrato i dati.
-          
-          this.tasks = response.data; // Assegna direttamente i dati dalla risposta
+          this.tasks = response.data;
           this.totalItems = response.totalCount || 0;
           this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-          
+
           // Aggiorna informazioni di navigazione
           this.prevPage = response.prev ?? null;
           this.nextPage = response.next || null;
           this.firstPage = response.first || 1;
           this.lastPage = response.last || this.totalPages;
         })
-      ).subscribe();
+      )
+      .subscribe();
   }
 
+  private getTask(): void {
+    this._taskService
+      .getTasks()
+      .pipe(
+        take(1),
+        tap((data) => {
+          this.tasks = data;
+          this.filteredTask = data;
+        })
+      )
+      .subscribe();
+  }
 }

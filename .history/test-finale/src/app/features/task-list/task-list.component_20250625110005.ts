@@ -22,6 +22,7 @@ export class TaskListComponent implements OnInit {
   private readonly _fb: FormBuilder = inject(FormBuilder);
 
   tasks: ITask[] = [];
+  filteredTask: ITask[] = [];
 
   //proprietà per la paginazione
   currentPage = 1;
@@ -44,15 +45,39 @@ export class TaskListComponent implements OnInit {
   statusOption = ['todo', 'doing', 'done'];
 
   ngOnInit(): void {
-    // this.getTask();
+    this.getTask();
     this.loadTasks();
   }
+
+  
+  // onSearch(): void {
+  //   this.currentPage = 1; // Reset alla prima pagina quando si cerca
+  //   this.loadTasks();
+  // }
 
    onSearch(): void {
-    this.currentPage = 1; // Reset alla prima pagina quando si cerca
-    this.loadTasks();
-  }
+     this.currentPage = 1;
+     this.loadTasks();
 
+    const formValues = this.searchForm.value;
+  
+    this.filteredTask = this.tasks.filter((task) => {
+      const titleValue =
+        !formValues.title ||
+        task.title.toLowerCase().includes(formValues.title.toLowerCase());
+  
+      const descriptionValue =
+        !formValues.description ||
+        task.description
+          .toLowerCase()
+          .includes(formValues.description.toLowerCase());
+  
+      const statusValue =
+        !formValues.status || task.status === formValues.status;
+  
+      return titleValue && descriptionValue && statusValue;
+    });
+  }
 
   onClear(): void {
     // this.searchForm.reset();
@@ -125,29 +150,20 @@ export class TaskListComponent implements OnInit {
       page: this.currentPage,
       limit: this.itemsPerPage
     };
-
+  
     const formValues = this.searchForm.value;
     const filters: ITaskFilters = {};
-
-    // Aggiungi solo i filtri che hanno valori non vuoti
-    if (formValues.title?.trim()) {
-      filters.title = formValues.title.trim();
-    }
-    if (formValues.description?.trim()) {
-      filters.description = formValues.description.trim();
-    }
-    if (formValues.status) {
-      filters.status = formValues.status;
-    }
-
+  
+    // Aggiungi solo i filtri che hanno valori
+    if (formValues.title) filters.title = formValues.title;
+    if (formValues.description) filters.description = formValues.description;
+    if (formValues.status) filters.status = formValues.status;
+  
     this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
       .pipe(
         take(1),
         tap((response: IResponse<ITask[]>) => {
-          // RIMUOVI IL FILTRO LOCALE DA QUI
-          // Il server ha già filtrato i dati.
-          
-          this.tasks = response.data; // Assegna direttamente i dati dalla risposta
+          this.tasks = response.data;
           this.totalItems = response.totalCount || 0;
           this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
           
@@ -160,4 +176,18 @@ export class TaskListComponent implements OnInit {
       ).subscribe();
   }
 
+  private getTask(): void {
+    this._taskService
+      .getTasks()
+      .pipe(
+        take(1),
+        tap((data) => {
+          this.tasks = data;
+          this.filteredTask = data;
+        })
+      )
+      .subscribe();
+  }
+  
+ 
 }

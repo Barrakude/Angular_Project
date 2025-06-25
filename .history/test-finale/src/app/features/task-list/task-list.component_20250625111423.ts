@@ -120,7 +120,7 @@ export class TaskListComponent implements OnInit {
     ).subscribe();
   }
   
-  loadTasks(): void {
+  private loadTasks(): void {
     const pagination: IPaginationParams = {
       page: this.currentPage,
       limit: this.itemsPerPage
