@@ -111,17 +111,11 @@ export class TaskListComponent implements OnInit {
     return pages;
   }
 
-  deleteTask(taskId:number):void{
-    this._taskService.deleteTask(taskId).pipe(
-      take(1),
-      tap(()=>{
-        console.log('task:', taskId, 'eliminata');
-        this.loadTasks();
-      })
-    ).subscribe();
+  deleteTask(task.id):void{
+    this._taskService.deleteTask(task.id)
   }
   
-  loadTasks(): void {
+  private loadTasks(): void {
     const pagination: IPaginationParams = {
       page: this.currentPage,
       limit: this.itemsPerPage

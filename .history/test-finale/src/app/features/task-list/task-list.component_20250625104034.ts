@@ -49,8 +49,72 @@ export class TaskListComponent implements OnInit {
     this.loadTasks();
   }
 
-  
-  onSearch(): void {
+  private loadTasks(): void {
+    const pagination: IPaginationParams = {
+      page: this.currentPage,
+      limit: this.itemsPerPage
+    };
+
+    const formValues = this.searchForm.value;
+    const filters: ITaskFilters = {};
+
+    // Aggiungi solo i filtri che hanno valori
+    if (formValues.title) filters.title = formValues.title;
+    if (formValues.description) filters.description = formValues.description;
+    if (formValues.status) filters.status = formValues.status;
+
+    this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
+      .pipe(
+        take(1),
+        tap((response: IResponse<ITask[]>) => {
+          this.tasks = response.data;
+          this.totalItems = response.totalCount || 0;
+          this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+          
+          // Aggiorna informazioni di navigazione
+          this.prevPage = response.prev ?? null;
+          this.nextPage = response.next || null;
+          this.firstPage = response.first || 1;
+          this.lastPage = response.last || this.totalPages;
+        })
+      ).subscribe();
+  }
+  //! metodo senza paginazione
+  getTask(): void {
+    this._taskService
+      .getTasks()
+      .pipe(
+        take(1),
+        tap((data) => {
+          this.tasks = data;
+          this.filteredTask = data;
+        })
+      )
+      .subscribe();
+  }
+
+  // onSearch(): void {
+  //   const formValues = this.searchForm.value;
+
+  //   this.filteredTask = this.tasks.filter((task) => {
+  //     const titleValue =
+  //       !formValues.title ||
+  //       task.title.toLowerCase().includes(formValues.title.toLowerCase());
+
+  //     const descriptionValue =
+  //       !formValues.description ||
+  //       task.description
+  //         .toLowerCase()
+  //         .includes(formValues.description.toLowerCase());
+
+  //     const statusValue =
+  //       !formValues.status || task.status === formValues.status;
+
+  //     return titleValue && descriptionValue && statusValue;
+  //   });
+  // }
+
+   onSearch(): void {
     this.currentPage = 1; // Reset alla prima pagina quando si cerca
     this.loadTasks();
   }
@@ -62,7 +126,7 @@ export class TaskListComponent implements OnInit {
     this.currentPage = 1; // Reset alla prima pagina
     this.loadTasks();
   }
-  
+
  // Metodi per la navigazione
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
@@ -111,78 +175,6 @@ export class TaskListComponent implements OnInit {
     return pages;
   }
 
-  deleteTask(taskId:number):void{
-    this._taskService.deleteTask(taskId).pipe(
-      take(1),
-      tap(()=>{
-        console.log('task:', taskId, 'eliminata');
-        this.loadTasks();
-      })
-    ).subscribe();
-  }
-  
-  loadTasks(): void {
-    const pagination: IPaginationParams = {
-      page: this.currentPage,
-      limit: this.itemsPerPage
-    };
-  
-    const formValues = this.searchForm.value;
-    const filters: ITaskFilters = {};
-  
-    // Aggiungi solo i filtri che hanno valori
-    if (formValues.title) filters.title = formValues.title;
-    if (formValues.description) filters.description = formValues.description;
-    if (formValues.status) filters.status = formValues.status;
-  
-    this._taskService.getPageTasks(pagination, Object.keys(filters).length ? filters : undefined)
-      .pipe(
-        take(1),
-        tap((response: IResponse<ITask[]>) => {
-          this.tasks = response.data;
-          this.totalItems = response.totalCount || 0;
-          this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-          
-          // Aggiorna informazioni di navigazione
-          this.prevPage = response.prev ?? null;
-          this.nextPage = response.next || null;
-          this.firstPage = response.first || 1;
-          this.lastPage = response.last || this.totalPages;
-        })
-      ).subscribe();
-  }
-  //! metodo senza paginazione
-  private getTask(): void {
-    this._taskService
-      .getTasks()
-      .pipe(
-        take(1),
-        tap((data) => {
-          this.tasks = data;
-          this.filteredTask = data;
-        })
-      )
-      .subscribe();
-  }
-  
-  // onSearch(): void {
-  //   const formValues = this.searchForm.value;
-  
-  //   this.filteredTask = this.tasks.filter((task) => {
-  //     const titleValue =
-  //       !formValues.title ||
-  //       task.title.toLowerCase().includes(formValues.title.toLowerCase());
-  
-  //     const descriptionValue =
-  //       !formValues.description ||
-  //       task.description
-  //         .toLowerCase()
-  //         .includes(formValues.description.toLowerCase());
-  
-  //     const statusValue =
-  //       !formValues.status || task.status === formValues.status;
-  
-  //     return titleValue && descriptionValue && statusValue;
-  //   });
-  // }
+
+
 }
